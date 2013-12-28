@@ -28,47 +28,47 @@ define([
 				setHash('');
 			},
 			'empty': function () {
-				assert.strictEqual('', hash());
+				assert.strictEqual(hash(), '');
 			},
 			'text': function () {
 				setHash('text');
-				assert.strictEqual('text', hash());
+				assert.strictEqual(hash(), 'text');
 			},
 			'text%20with%20spaces': function () {
 				setHash('text%20with%20spaces');
-				assert.strictEqual('text%20with%20spaces', hash());
+				assert.strictEqual(hash(), 'text%20with%20spaces');
 			},
 			'text%23with%23encoded%23hashes': function () {
 				setHash('text%23with%23encoded%23hashes');
-				assert.strictEqual('text%23with%23encoded%23hashes', hash());
+				assert.strictEqual(hash(), 'text%23with%23encoded%23hashes');
 			},
 			'text+with+pluses': function () {
 				setHash('text+with+pluses');
-				assert.strictEqual('text+with+pluses', hash());
+				assert.strictEqual(hash(), 'text+with+pluses');
 			},
 			'%20leadingSpace': function () {
 				setHash('%20leadingSpace');
-				assert.strictEqual('%20leadingSpace', hash());
+				assert.strictEqual(hash(), '%20leadingSpace');
 			},
 			'trailingSpace%20': function () {
 				setHash('trailingSpace%20');
-				assert.strictEqual('trailingSpace%20', hash());
+				assert.strictEqual(hash(), 'trailingSpace%20');
 			},
 			'under_score': function () {
 				setHash('under_score');
-				assert.strictEqual('under_score', hash());
+				assert.strictEqual(hash(), 'under_score');
 			},
 			'extra&instring': function () {
 				setHash('extra&instring');
-				assert.strictEqual('extra&instring', hash());
+				assert.strictEqual(hash(), 'extra&instring');
 			},
 			'extra?instring': function () {
 				setHash('extra?instring');
-				assert.strictEqual('extra?instring', hash());
+				assert.strictEqual(hash(), 'extra?instring');
 			},
 			'?testa=3&testb=test': function () {
 				setHash('?testa=3&testb=test');
-				assert.strictEqual('?testa=3&testb=test', hash());
+				assert.strictEqual(hash(), '?testa=3&testb=test');
 			}
 		},
 
@@ -81,51 +81,51 @@ define([
 			},
 			'empty': function () {
 				hash('');
-				assert.strictEqual('', getHash());
+				assert.strictEqual(getHash(), '');
 			},
 			'text': function () {
 				hash('text');
-				assert.strictEqual('text', getHash());
+				assert.strictEqual(getHash(), 'text');
 			},
 			'text%20with%20spaces': function () {
 				hash('text%20with%20spaces');
-				assert.strictEqual('text%20with%20spaces', getHash());
+				assert.strictEqual(getHash(), 'text%20with%20spaces');
 			},
 			'text%23with%23encoded%23hashes': function () {
 				hash('text%23with%23encoded%23hashes');
-				assert.strictEqual('text%23with%23encoded%23hashes', getHash());
+				assert.strictEqual(getHash(), 'text%23with%23encoded%23hashes');
 			},
 			'text+with+pluses': function () {
 				hash('text+with+pluses');
-				assert.strictEqual('text+with+pluses', getHash());
+				assert.strictEqual(getHash(), 'text+with+pluses');
 			},
 			'%20leadingSpace': function () {
 				hash('%20leadingSpace');
-				assert.strictEqual('%20leadingSpace', getHash());
+				assert.strictEqual(getHash(), '%20leadingSpace');
 			},
 			'trailingSpace%20': function () {
 				hash('trailingSpace%20');
-				assert.strictEqual('trailingSpace%20', getHash());
+				assert.strictEqual(getHash(), 'trailingSpace%20');
 			},
 			'under_score': function () {
 				hash('under_score');
-				assert.strictEqual('under_score', getHash());
+				assert.strictEqual(getHash(), 'under_score');
 			},
 			'extra&instring': function () {
 				hash('extra&instring');
-				assert.strictEqual('extra&instring', getHash());
+				assert.strictEqual(getHash(), 'extra&instring');
 			},
 			'extra?instring': function () {
 				hash('extra?instring');
-				assert.strictEqual('extra?instring', getHash());
+				assert.strictEqual(getHash(), 'extra?instring');
 			},
 			'?testa=3&testb=test': function () {
 				hash('?testa=3&testb=test');
-				assert.strictEqual('?testa=3&testb=test', getHash());
+				assert.strictEqual(getHash(), '?testa=3&testb=test');
 			},
 			'#leadingHash': function () {
 				hash('#leadingHash');
-				assert.strictEqual('leadingHash', getHash());
+				assert.strictEqual(getHash(), 'leadingHash');
 			}
 		},
 
@@ -142,7 +142,7 @@ define([
 				var dfd = this.async();
 				_subscriber = topic.subscribe('/dojo/hashchange',
 					dfd.callback(function (value) {
-						assert.strictEqual('text', value);
+						assert.strictEqual(value, 'text');
 						return value;
 					})
 				);
