@@ -8,13 +8,13 @@ define([
 	var _subscriber = null;
 	// utilities for the tests:
 	function setHash(h) {
-		h = h || "";
+		h = h || '';
 		location.replace('#'+h);
 	}
 
 	function getHash() {
-		var h = location.href, i = h.indexOf("#");
-		return (i >= 0) ? h.substring(i + 1) : "";
+		var h = location.href, i = h.indexOf('#');
+		return (i >= 0) ? h.substring(i + 1) : '';
 	}
 
 	registerSuite({
@@ -130,11 +130,11 @@ define([
 		},
 
 		'topic publish': {
-			beforeEach: function () {
+			before: function () {
 				_subscriber = null;
 				setHash('');
 			},
-			afterEach: function () {
+			after: function () {
 				_subscriber.remove();
 				setHash('');
 			},
