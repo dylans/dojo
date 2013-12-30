@@ -155,6 +155,9 @@ define([
 				assert.isFunction(stopImmediatePropagation, 'stopImmediatePropagation should be a function, was ' + stopImmediatePropagation);
 				assert.isFunction(preventDefault, 'preventDefault should be a function, was ' + preventDefault);
 			}
+		},
+		'route arguments' : {
+
 		}
 	});
 });
