@@ -8,7 +8,8 @@ define([
 
 	// This test uses RouterBase so that we can test a few different
 	// behaviors of the router which require re-initializing a new router
-	var count = 0, a, b, testObject,
+	var count = 0, a, b, testObject, test,
+		prevented = false, goResult, routeHit,
 		router, handle, foo;
 
 	// Simple helper to make tearDown simpler
@@ -125,10 +126,10 @@ define([
 				hash('');
 				count = 0;
 				router = new RouterBase();
-
+				router.startup('');
 			},
 			after: function () {
-				handle.remove();
+				removeAll(handle);
 				count = 0;
 				if (router._started) {
 					router.destroy();
@@ -136,7 +137,6 @@ define([
 			},
 			'structure': function () {
 				var oldPath, newPath, params, stopImmediatePropagation, preventDefault;
-				router.startup('');
 				handle = router.register('/checkEventObject/:foo', function(event){
 					oldPath = event.oldPath;
 					newPath = event.newPath;
@@ -159,9 +159,10 @@ define([
 			beforeEach: function () {
 				hash('');
 				router = new RouterBase();
+				router.startup('');
 			},
 			afterEach: function () {
-				handle.remove();
+				removeAll(handle);
 				if (router._started) {
 					router.destroy();
 				}				
@@ -215,17 +216,18 @@ define([
 				assert.strictEqual(testObject.thing, '4/5/6', 'testObject.thing should have been 4/5/6, was ' + testObject.thing);
 			}
 		},
-		'route arguments, capture groups' : {
+		'route arguments, capture groups': {
 			beforeEach: function () {
 				testObject = null;
 				hash('');
 				router = new RouterBase();
+				router.startup('');
 				handle = router.register(/^\/path\/(\w+)\/(\d+)$/, function(event){
 					testObject = event.params;
 				});
 			},
 			afterEach: function () {
-				handle.remove();
+				removeAll(handle);
 				if (router._started) {
 					router.destroy();
 				}				
@@ -253,6 +255,105 @@ define([
 				assert.isArray(testObject, 'testObject should have been an array')
 				assert.strictEqual(testObject[0], 'abc123', 'testObject[0] should have been abc123, was ' + testObject[0]);
 				assert.strictEqual(testObject[1], '456', 'testObject[1] should have been 456, was ' + testObject[1]);
+			}
+		},
+		'order and propagation': {
+			beforeEach: function () {
+				hash('');
+				test = '';
+				handle = [];
+				router = new RouterBase();
+				router.startup('');
+			},
+			afterEach: function () {
+				removeAll(handle);
+				if (router._started) {
+					router.destroy();
+				}				
+			},
+			'.registerBefore': function () {
+				handle.push(router.register('/isBefore', function () {
+					test += '1';
+				}));
+				handle.push(router.registerBefore('/isBefore', function () {
+					test += '2';
+				}));
+				handle.push(router.register('/isBefore', function () {
+					test += '3';
+				}));
+				handle.push(router.registerBefore('/isBefore', function () {
+					test += '4';
+				}));
+				handle.push(router.register('/isBefore', function () {
+					test += '5';
+				}));
+				router.go('/isBefore');
+
+				assert.strictEqual(test, '42135', 'test should have been 42135, was ' + test);
+			},
+			'.stopImmediatePropagation': function () {
+				handle.push(router.register('/stopImmediatePropagation', function () {
+					test += 'A';
+				}));
+				handle.push(router.register('/stopImmediatePropagation', function () {
+					test += 'B';
+				}));
+				handle.push(router.register('/stopImmediatePropagation', function (event) {
+					event.stopImmediatePropagation();
+					test += 'C';
+				}));
+				handle.push(router.register('/stopImmediatePropagation', function () {
+					test += 'D';
+				}));
+				handle.push(router.register('/stopImmediatePropagation', function () {
+					test += 'E';
+				}));
+				router.go('/stopImmediatePropagation');
+
+				assert.strictEqual(test, 'ABC', 'test should have been ABC, was ' + test);
+			}
+		},
+		'defaults': {
+			before: function () {
+				hash('');
+				handle = [];
+				router = new RouterBase();
+			},
+			after: function () {
+				removeAll(handle);
+				if (router._started) {
+					router.destroy();
+				}				
+			},
+			'.preventDefault': function () {
+				prevented = false, goResult = false;
+				router.startup('');
+				assert.strictEqual(hash(), '', 'hash should be empty');
+
+				handle.push(router.register('/preventDefault', function (event) {
+					event.preventDefault();
+				}));
+				handle.push(router.register('/allowDefault', function () {
+					// not preventing default
+				}));
+				goResult = router.go('/preventDefault');
+
+				assert.strictEqual(hash(), '', 'hash should still be empty');
+				assert.ok(!goResult, 'goResult should be false');
+
+				goResult = router.go('/someOtherPath');
+
+				assert.strictEqual(hash(), '/someOtherPath', 'hash should be /someOtherPath');
+				assert.ok(goResult, 'goResult should be true');
+			},
+			'default path': function () {
+				routeHit = false;
+				handle = router.register('/default', function (event) {
+					routeHit = true;
+				});
+				router.startup('/default');
+
+				assert.ok(!routeHit, 'Our route was not hit, but should have been');
 			}
 		}
 	});
