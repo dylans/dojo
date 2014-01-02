@@ -33,8 +33,6 @@ define([
 				hash('', true);
 				router = new RouterBase();
 			},
-			after: function () {
-			},
 			'methods': function () {
 				assert.ok(router.register, 'Router has a register');
 				assert.ok(router.go, 'Router has a go');
@@ -96,7 +94,6 @@ define([
 					assert.strictEqual(count, 2, 'Count should have been 2, was ' + count);
 				})));
 				hash('/bar');
-				return dfd;
 			},
 			'go': function () {
 				handle = [];
