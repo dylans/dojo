@@ -1,4 +1,4 @@
 define(['./demoC'], function () {
 	console.log('this is Router/demoA no layer');
-	results.push('Router/demoA:nocache');
+	require.mappingMultiLayerResults.push('Router/demoA:nocache');
 });
